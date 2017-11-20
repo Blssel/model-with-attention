@@ -26,7 +26,7 @@ def preprocess(videos,frame_len,frame_gap,frame_size,num_frames):
 	return video_processed
 	
 
-def next_batch(batch_size,data_path,frames_needed,frame_gap,input_frame_size,category='train'):#frames_needed,frame_gap,input_frame_size等需要在最外层指定
+def next_batch(batch_size,data_path,frames_needed,frame_gap,input_frame_size,num_classes,category='train'):#frames_needed,frame_gap,input_frame_size等需要在最外层指定
 	#获取文件列表  然后创建文件队列
 	files=tf.train.match_filenames_once(data_path+ os.sep+ 'split1_train_*')
 	filename_queue=tf.train.string_input_producer(files,shuffle=False) #这里的shuffle
@@ -52,6 +52,9 @@ def next_batch(batch_size,data_path,frames_needed,frame_gap,input_frame_size,cat
 	retyped_videos=tf.cast(decoded_videos, tf.float32)
 
 	labels=tf.cast(features['label'],tf.int32)
+	#print(labels)
+	#groundtruth=np.zeros([1,num_classes],dtype=np.float32)
+	#groundtruth[0][int(labels)]=1.0
 	num_frames=tf.cast(features['num_frames'],tf.int32)
 	height=tf.cast(features['height'],tf.int32)
 	width=tf.cast(features['width'],tf.int32)
@@ -74,5 +77,6 @@ def next_batch(batch_size,data_path,frames_needed,frame_gap,input_frame_size,cat
 if __name__=='__main__':
 	data_path='/home/mcger/datasets/tfrecords/ucf101'
 	batch_size=5
-	video,label=next_batch(batch_size,data_path,64,4,224,category='train')
+	video,label=next_batch(batch_size,data_path,64,4,224,101,category='train')
 	print(video)
+	print(label)
